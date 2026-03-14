@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyecto de Ley: Justicia Inmutable — Blockchain Bolivia</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy:  #0f1e3c;
+  --gold:  #c9903a;
+  --gold2: #e8b060;
+  --paper: #faf8f4;
+  --cream: #f2ede4;
+  --ink:   #1c1c24;
+  --muted: #6b7280;
+  --border:#e0d9ce;
+  --white: #ffffff;
+  --code:  #0d1117;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Nunito',sans-serif;background:var(--paper);color:var(--ink);overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.018;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+.playfair{font-family:'Playfair Display',serif;}
+.lora{font-family:'Lora',serif;}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+/* NAV */
+#nav{position:sticky;top:0;z-index:50;background:rgba(250,248,244,.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:box-shadow .3s;}
+#nav.shadow{box-shadow:0 4px 24px rgba(0,0,0,.07);}
+.nav-flag{height:3px;background:linear-gradient(90deg,#DA291C 33.3%,#F4E400 33.3% 66.6%,#007A33 66.6%);}
+.nav-link{font-size:.8rem;font-weight:700;letter-spacing:.03em;text-decoration:none;color:var(--muted);padding:.2rem 0;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+.nav-link:hover{color:var(--navy);border-bottom-color:var(--gold);}
+
+/* HERO */
+#hero{background:var(--navy);position:relative;overflow:hidden;padding:7rem 1.5rem 6rem;}
+.hero-lines{position:absolute;inset:0;pointer-events:none;background-image:repeating-linear-gradient(0deg,rgba(201,144,58,.05) 0,rgba(201,144,58,.05) 1px,transparent 1px,transparent 60px),repeating-linear-gradient(90deg,rgba(201,144,58,.04) 0,rgba(201,144,58,.04) 1px,transparent 1px,transparent 60px);}
+.glow{position:absolute;border-radius:50%;pointer-events:none;filter:blur(100px);}
+.gold-rule{display:block;width:48px;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;margin:1.25rem auto;}
+
+/* SECTION LABEL */
+.slabel{display:inline-flex;align-items:center;gap:.5rem;font-size:.68rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem;}
+.slabel::before{content:'';display:block;width:18px;height:2px;background:var(--gold);}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:transform .2s,box-shadow .2s,border-color .2s;position:relative;overflow:hidden;}
+.card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.08);border-color:#c9b08a;}
+.card-bar{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.card:hover .card-bar{transform:scaleX(1);}
+
+/* TIMELINE */
+.tl-step{display:flex;align-items:flex-start;gap:.85rem;cursor:pointer;padding:.55rem .7rem;border-radius:8px;transition:background .15s;}
+.tl-step:hover{background:rgba(15,30,60,.04);}
+.tl-step.active{background:rgba(201,144,58,.09);}
+.tl-dot{flex-shrink:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;font-family:'JetBrains Mono',monospace;background:var(--cream);border:2px solid var(--border);color:var(--muted);transition:all .2s;margin-top:.1rem;}
+.tl-step.active .tl-dot{background:var(--gold);border-color:var(--gold);color:#fff;}
+.tl-label{font-size:.82rem;font-weight:700;color:var(--muted);line-height:1.4;transition:color .15s;}
+.tl-step.active .tl-label,.tl-step:hover .tl-label{color:var(--navy);}
+.tl-conn{width:2px;height:18px;background:var(--border);margin-left:27px;}
+.cpanel{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:2.5rem;min-height:340px;}
+.note-box{background:linear-gradient(135deg,#fffbf0,#fef3d8);border:1px solid #f0d99a;border-left:4px solid var(--gold);border-radius:8px;padding:1.25rem 1.5rem;margin-top:1.5rem;}
+
+/* ANALYSIS */
+#analisis-wrap{background:var(--navy);border-radius:24px;overflow:hidden;padding:4rem 3rem;}
+
+/* COUNTRY */
+.cbtn{display:flex;align-items:center;gap:.75rem;padding:.9rem 1.25rem;border-radius:12px;cursor:pointer;border:1px solid var(--border);background:var(--white);font-weight:700;font-size:.88rem;color:var(--muted);transition:all .2s;text-align:left;width:100%;}
+.cbtn:hover{border-color:var(--gold);color:var(--navy);background:#fffbf4;}
+.cbtn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.cflag{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.35rem;background:var(--cream);flex-shrink:0;transition:background .2s;}
+.cbtn.active .cflag{background:rgba(255,255,255,.1);}
+
+/* CODE */
+.code-tab{padding:.8rem 1.4rem;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.3);border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;}
+.code-tab:hover{color:rgba(255,255,255,.65);}
+.code-tab.active{color:var(--gold2);border-bottom-color:var(--gold2);}
+.code-view{display:none;}
+.code-view.active{display:block;}
+pre.cb{font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.75;color:#cdd6f4;white-space:pre-wrap;word-break:break-word;}
+.kw{color:#ff79c6;}.ty{color:#8be9fd;}.st{color:#f1fa8c;}.fn{color:#50fa7b;}.cm{color:#6272a4;font-style:italic;}.vr{color:#ffb86c;}.nm{color:#bd93f9;}
+
+/* BUTTONS */
+.btn-g{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold);color:#fff;font-weight:800;font-size:.9rem;padding:.85rem 2.1rem;border-radius:8px;border:none;cursor:pointer;transition:background .15s,transform .1s,box-shadow .15s;text-decoration:none;}
+.btn-g:hover{background:#b8812f;transform:translateY(-1px);box-shadow:0 8px 24px rgba(201,144,58,.35);}
+.btn-o{display:inline-flex;align-items:center;gap:.5rem;background:transparent;color:rgba(250,248,244,.8);font-weight:700;font-size:.9rem;padding:.85rem 2.1rem;border-radius:8px;border:1px solid rgba(250,248,244,.2);cursor:pointer;transition:background .15s;text-decoration:none;}
+.btn-o:hover{background:rgba(255,255,255,.06);}
+
+/* ANIM */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.fu{animation:fadeUp .6s ease both;}
+.d1{animation-delay:.08s;}.d2{animation-delay:.18s;}.d3{animation-delay:.28s;}.d4{animation-delay:.42s;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.fi{animation:fadeIn .35s ease both;}
+
+@media(max-width:768px){#hero{padding:4.5rem 1.25rem 4rem;}#analisis-wrap{padding:2.5rem 1.25rem;}.deskonly{display:none!important;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-flag"></div>
+  <div style="max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:62px;">
+    <a href="#" class="playfair" style="font-size:1.1rem;font-weight:700;color:var(--navy);text-decoration:none;">⚖️ Ley <span style="color:var(--gold);">Blockchain</span> <span style="color:var(--muted);font-size:.85rem;">Bolivia</span></a>
+    <div class="deskonly" style="display:flex;gap:1.75rem;">
+      <a class="nav-link" href="#proceso">Proceso Legislativo</a>
+      <a class="nav-link" href="#legal">Base Legal</a>
+      <a class="nav-link" href="#analisis">Análisis</a>
+      <a class="nav-link" href="#global">Ref. Global</a>
+      <a class="nav-link" href="#codigo">Arquitectura &amp; Código</a>
+    </div>
+    <a href="#proceso" class="btn-g" style="font-size:.78rem;padding:.5rem 1.1rem;">Explorar →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header id="hero">
+  <div class="hero-lines"></div>
+  <div class="glow" style="width:700px;height:700px;background:rgba(201,144,58,.08);top:-280px;right:-200px;"></div>
+  <div class="glow" style="width:500px;height:500px;background:rgba(10,20,50,.6);bottom:-200px;left:-150px;"></div>
+
+  <div style="max-width:800px;margin:0 auto;text-align:center;position:relative;z-index:2;">
+    <div class="fu" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,144,58,.12);border:1px solid rgba(201,144,58,.2);border-radius:99px;padding:.3rem 1rem;margin-bottom:2rem;">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;"></span>
+      <span style="font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);">Propuesta de Modernización del Estado Plurinacional</span>
+    </div>
+
+    <h1 class="playfair fu d1" style="font-size:clamp(2.2rem,5.5vw,3.8rem);color:#faf8f4;line-height:1.15;letter-spacing:-.02em;margin-bottom:.9rem;">
+      Implementación de Blockchain<br><em style="color:var(--gold2);">en la Justicia Boliviana</em>
+    </h1>
+
+    <span class="gold-rule fu d2"></span>
+
+    <p class="lora fu d2" style="font-size:1.05rem;color:rgba(250,248,244,.6);max-width:600px;margin:0 auto 2.5rem;line-height:1.85;font-style:italic;">
+      Guía interactiva para estructurar una propuesta legislativa que transforme los expedientes judiciales en registros inmutables, transparentes y auditables mediante tecnología DLT.
+    </p>
+
+    <div class="fu d3" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="#proceso" class="btn-g" style="font-size:.95rem;">⬇ Iniciar la Exploración</a>
+      <button class="btn-o" style="font-size:.95rem;">📄 Ver Anteproyecto</button>
+    </div>
+
+    <div class="fu d4" style="display:flex;gap:3rem;justify-content:center;margin-top:4rem;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.07);padding-top:3rem;">
+      <div><div class="playfair" style="font-size:2rem;color:var(--gold2);">5</div><div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,248,244,.3);margin-top:.2rem;">Pasos legislativos</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.08);"></div>
+      <div><div class="playfair" style="font-size:2rem;color:var(--gold2);">3</div><div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,248,244,.3);margin-top:.2rem;">Leyes de soporte</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.08);"></div>
+      <div><div class="playfair" style="font-size:2rem;color:var(--gold2);">3</div><div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,248,244,.3);margin-top:.2rem;">Casos internacionales</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
+
+  <!-- PROCESO -->
+  <section id="proceso" style="padding:6rem 0;">
+    <div class="slabel">Proceso Legislativo</div>
+    <h2 class="playfair" style="font-size:clamp(1.8rem,3.5vw,2.6rem);letter-spacing:-.02em;margin-bottom:.6rem;">El Camino de la Ley en Bolivia</h2>
+    <p style="font-size:.93rem;color:var(--muted);max-width:620px;line-height:1.75;margin-bottom:3rem;">¿Cómo introducimos esta idea en la Asamblea Legislativa Plurinacional? Explore los pasos del <strong style="color:var(--ink);">Art. 162 CPE</strong>. Haga clic en cada etapa para ver los detalles.</p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:2rem;align-items:flex-start;">
+      <div style="flex:0 0 240px;min-width:200px;" id="tl-nav"></div>
+      <div style="flex:2;min-width:280px;"><div class="cpanel" id="tl-content"><div style="color:var(--muted);text-align:center;padding:4rem 2rem;"><div style="font-size:2.5rem;margin-bottom:1rem;">📋</div><p style="font-size:.88rem;">Seleccione un paso para ver los detalles.</p></div></div></div>
+    </div>
+  </section>
+
+  <!-- BASE LEGAL -->
+  <section id="legal" style="padding:0 0 6rem;">
+    <div class="slabel">Fundamentación Jurídica</div>
+    <h2 class="playfair" style="font-size:clamp(1.8rem,3.5vw,2.6rem);letter-spacing:-.02em;margin-bottom:.6rem;">La Base Legal ya existe</h2>
+    <p style="font-size:.93rem;color:var(--muted);max-width:620px;line-height:1.75;margin-bottom:3rem;">Un buen proyecto se ancla en la normativa vigente. Para implementar Blockchain judicial, contamos con tres pilares legales bolivianos.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
+      <div class="card">
+        <div class="card-bar"></div>
+        <div style="width:50px;height:50px;border-radius:11px;background:#eef2ff;border:1px solid #c7d2fe;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.4rem;">📜</div>
+        <div style="font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#3730a3;background:#eef2ff;border:1px solid #c7d2fe;border-radius:99px;padding:.22rem .75rem;display:inline-block;margin-bottom:.7rem;">CPE Art. 162</div>
+        <h3 class="playfair" style="font-size:1.12rem;margin-bottom:.5rem;color:var(--navy);">Iniciativa Legislativa</h3>
+        <p style="font-size:.87rem;color:var(--muted);line-height:1.75;">La facultad de proponer leyes la tienen ciudadanos, asambleístas, el Ejecutivo y el Tribunal Supremo (en materia judicial). La vía ideal es el <strong style="color:var(--ink);">Tribunal Supremo de Justicia</strong> o Asambleístas de la Comisión de Justicia.</p>
+      </div>
+      <div class="card">
+        <div class="card-bar"></div>
+        <div style="width:50px;height:50px;border-radius:11px;background:#f0fdf4;border:1px solid #bbf7d0;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.4rem;">💻</div>
+        <div style="font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#166534;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:99px;padding:.22rem .75rem;display:inline-block;margin-bottom:.7rem;">Ley N° 164</div>
+        <h3 class="playfair" style="font-size:1.12rem;margin-bottom:.5rem;color:var(--navy);">Telecomunicaciones y TIC</h3>
+        <p style="font-size:.87rem;color:var(--muted);line-height:1.75;">Otorga validez jurídica a documentos y firmas digitales. Es la <strong style="color:var(--ink);">piedra angular</strong>. El Blockchain actuará como notario digital distribuido que certifica las firmas generadas bajo esta ley.</p>
+      </div>
+      <div class="card">
+        <div class="card-bar"></div>
+        <div style="width:50px;height:50px;border-radius:11px;background:#fffbeb;border:1px solid #fde68a;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.4rem;">⚖️</div>
+        <div style="font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:99px;padding:.22rem .75rem;display:inline-block;margin-bottom:.7rem;">Ley N° 1173</div>
+        <h3 class="playfair" style="font-size:1.12rem;margin-bottom:.5rem;color:var(--navy);">Abreviación Procesal</h3>
+        <p style="font-size:.87rem;color:var(--muted);line-height:1.75;">Ordena el <strong style="color:var(--ink);">Sistema Informático de Gestión de Causas</strong> y el Expediente Electrónico. El Blockchain es la capa de seguridad subyacente para evitar alteraciones por consorcios.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANÁLISIS -->
+  <section id="analisis" style="padding:0 0 6rem;">
+    <div id="analisis-wrap">
+      <div style="display:flex;flex-wrap:wrap;gap:3rem;align-items:center;">
+        <div style="flex:1;min-width:260px;">
+          <div style="font-size:.68rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);margin-bottom:1rem;">¿Por qué Blockchain?</div>
+          <h2 class="playfair" style="font-size:clamp(1.7rem,3vw,2.4rem);color:#faf8f4;margin-bottom:1.1rem;line-height:1.2;">La prueba matemática de la transparencia</h2>
+          <p class="lora" style="font-size:.93rem;color:rgba(250,248,244,.6);line-height:1.85;margin-bottom:1.75rem;font-style:italic;">El problema actual: pérdida de expedientes, alteración de folios, mora procesal y consorcios. Con Blockchain, una vez registrado un actuado, <strong style="color:var(--gold2);">nadie puede modificarlo sin dejar rastro evidente.</strong></p>
+          <ul style="display:flex;flex-direction:column;gap:.8rem;">
+            <li style="display:flex;align-items:flex-start;gap:.7rem;font-size:.88rem;color:rgba(250,248,244,.7);"><span style="color:var(--gold2);font-size:1rem;flex-shrink:0;">✔</span><span><strong style="color:#faf8f4;">Inmutabilidad:</strong> Adiós a la "pérdida de fojas".</span></li>
+            <li style="display:flex;align-items:flex-start;gap:.7rem;font-size:.88rem;color:rgba(250,248,244,.7);"><span style="color:var(--gold2);font-size:1rem;flex-shrink:0;">✔</span><span><strong style="color:#faf8f4;">Trazabilidad:</strong> Se sabe exactamente quién firmó qué y a qué hora.</span></li>
+            <li style="display:flex;align-items:flex-start;gap:.7rem;font-size:.88rem;color:rgba(250,248,244,.7);"><span style="color:var(--gold2);font-size:1rem;flex-shrink:0;">✔</span><span><strong style="color:#faf8f4;">Auditoría pública:</strong> Cualquier ciudadano puede verificar la integridad del expediente.</span></li>
+          </ul>
+        </div>
+        <div style="flex:1;min-width:260px;max-width:440px;">
+          <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.5rem;">
+            <div style="position:relative;height:300px;width:100%;"><canvas id="impactChart"></canvas></div>
+            <p style="text-align:center;font-size:.7rem;color:rgba(250,248,244,.3);margin-top:.75rem;letter-spacing:.05em;text-transform:uppercase;">Métricas conceptuales de mejora en gestión de expedientes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GLOBAL -->
+  <section id="global" style="padding:0 0 6rem;">
+    <div class="slabel">Jurisprudencia Global</div>
+    <h2 class="playfair" style="font-size:clamp(1.8rem,3.5vw,2.6rem);letter-spacing:-.02em;margin-bottom:.6rem;">Casos de Éxito Internacional</h2>
+    <p style="font-size:.93rem;color:var(--muted);max-width:620px;line-height:1.75;margin-bottom:3rem;">La Exposición de Motivos debe citar cómo otros Estados han resuelto problemas similares. Seleccione un país para ver su experiencia.</p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start;">
+      <div style="flex:0 0 230px;display:flex;flex-direction:column;gap:.7rem;" id="country-list"></div>
+      <div style="flex:2;min-width:280px;"><div class="cpanel" id="country-detail"><div style="text-align:center;color:var(--muted);padding:4rem 2rem;"><div style="font-size:2.5rem;margin-bottom:1rem;">🌍</div><p style="font-size:.88rem;">Seleccione un país para ver su implementación.</p></div></div></div>
+    </div>
+  </section>
+
+  <!-- CÓDIGO -->
+  <section id="codigo" style="padding:0 0 6rem;">
+    <div class="slabel">Arquitectura &amp; Código</div>
+    <h2 class="playfair" style="font-size:clamp(1.8rem,3.5vw,2.6rem);letter-spacing:-.02em;margin-bottom:.6rem;">Del Papel (Ley) al Código</h2>
+    <p style="font-size:.93rem;color:var(--muted);max-width:680px;line-height:1.75;margin-bottom:2.5rem;">Un artículo que dice <em>"el expediente será inmodificable y registrará al autor"</em> se traduce en un <strong style="color:var(--ink);">Smart Contract</strong> dentro de una red Blockchain permisionada (Hyperledger Fabric o Ethereum privado).</p>
+
+    <div style="border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.06);box-shadow:0 24px 64px rgba(0,0,0,.22);">
+      <div style="background:#161b28;border-bottom:1px solid rgba(255,255,255,.06);display:flex;overflow-x:auto;" id="code-tabs">
+        <button class="code-tab active" data-t="solidity">1. Smart Contract (Lógica Legal)</button>
+        <button class="code-tab" data-t="backend">2. Backend (Firma Digital / JS)</button>
+        <button class="code-tab" data-t="frontend">3. Frontend (Vista del Juez)</button>
+      </div>
+
+      <div style="background:var(--code);padding:2rem 2.25rem;">
+
+        <div id="cv-solidity" class="code-view active">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.5rem;">
+            <span class="mono" style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold2);">Solidity — Contrato Inteligente</span>
+            <span class="mono" style="font-size:.65rem;color:rgba(255,255,255,.22);">Simula el "Art. 3: Registro Inmutable"</span>
+          </div>
+<pre class="cb"><span class="cm">// Contrato Inteligente que representa un Expediente Judicial Boliviano</span>
+<span class="kw">pragma solidity</span> ^0.8.0;
+
+<span class="kw">contract</span> <span class="ty">JusticiaBolivia</span> {
+
+  <span class="cm">// Estructura de un Documento (Memorial, Providencia, Sentencia)</span>
+  <span class="kw">struct</span> <span class="ty">ActuadoJudicial</span> {
+    <span class="ty">string</span>  <span class="vr">hashDocumento</span>; <span class="cm">// Hash IPFS del PDF — garantiza inalterabilidad</span>
+    <span class="ty">uint256</span> <span class="vr">fechaHora</span>;    <span class="cm">// Timestamp inmutable en blockchain</span>
+    <span class="ty">address</span> <span class="vr">emisor</span>;       <span class="cm">// Billetera (Firma digital) del Juez/Abogado</span>
+    <span class="ty">string</span>  <span class="vr">tipoActuado</span>;  <span class="cm">// Ej: "Sentencia", "Memorial", "Providencia"</span>
+  }
+
+  <span class="cm">// Mapeo: NUREJ boliviano → lista de actuados del expediente</span>
+  <span class="kw">mapping</span>(<span class="ty">string</span> => <span class="ty">ActuadoJudicial</span>[]) <span class="kw">public</span> <span class="vr">expedientes</span>;
+
+  <span class="cm">// Evento para auditoría pública al registrar un nuevo documento</span>
+  <span class="kw">event</span> <span class="fn">NuevoActuadoRegistrado</span>(<span class="ty">string</span> nurej, <span class="ty">string</span> hashDoc, <span class="ty">address</span> emisor);
+
+  <span class="cm">// Equivale al acto de "Ingresar memorial por buzón judicial"</span>
+  <span class="kw">function</span> <span class="fn">registrarActuado</span>(
+    <span class="ty">string memory</span> <span class="vr">_nurej</span>,
+    <span class="ty">string memory</span> <span class="vr">_hashDoc</span>,
+    <span class="ty">string memory</span> <span class="vr">_tipo</span>
+  ) <span class="kw">public</span> {
+    <span class="vr">expedientes</span>[<span class="vr">_nurej</span>].<span class="fn">push</span>(<span class="ty">ActuadoJudicial</span>({
+      hashDocumento: <span class="vr">_hashDoc</span>,
+      fechaHora:     block.timestamp,
+      emisor:        msg.sender,
+      tipoActuado:   <span class="vr">_tipo</span>
+    }));
+    <span class="kw">emit</span> <span class="fn">NuevoActuadoRegistrado</span>(<span class="vr">_nurej</span>, <span class="vr">_hashDoc</span>, msg.sender);
+  }
+}</pre>
+        </div>
+
+        <div id="cv-backend" class="code-view">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.5rem;">
+            <span class="mono" style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#79c0ff;">Node.js — Backend</span>
+            <span class="mono" style="font-size:.65rem;color:rgba(255,255,255,.22);">Integración con Ley 164 (Firma Digital ADSIB)</span>
+          </div>
+<pre class="cb"><span class="kw">const</span> <span class="vr">crypto</span>         = <span class="fn">require</span>(<span class="st">'crypto'</span>);
+<span class="kw">const</span> { <span class="vr">ethers</span> }      = <span class="fn">require</span>(<span class="st">'ethers'</span>);          <span class="cm">// Interacción blockchain</span>
+<span class="kw">const</span> <span class="vr">validadorADSIB</span> = <span class="fn">require</span>(<span class="st">'./servicios/adsib'</span>); <span class="cm">// Validación Ley 164</span>
+
+<span class="kw">async function</span> <span class="fn">subirMemorialAlExpediente</span>(<span class="vr">nurej</span>, <span class="vr">archivoPDF</span>, <span class="vr">firmaDigitalPem</span>) {
+  <span class="kw">try</span> {
+    <span class="cm">// 1. Validar firma digital bajo la Ley 164 boliviana</span>
+    <span class="kw">const</span> <span class="vr">esFirmaValida</span> = <span class="kw">await</span> <span class="vr">validadorADSIB</span>.<span class="fn">verificar</span>(<span class="vr">archivoPDF</span>, <span class="vr">firmaDigitalPem</span>);
+    <span class="kw">if</span> (!<span class="vr">esFirmaValida</span>) <span class="kw">throw new</span> <span class="ty">Error</span>(<span class="st">"Firma digital inválida según ADSIB"</span>);
+
+    <span class="cm">// 2. Hash SHA-256 del PDF — si se cambia una coma, el hash cambia</span>
+    <span class="kw">const</span> <span class="vr">hashBuffer</span>    = crypto.<span class="fn">createHash</span>(<span class="st">'sha256'</span>).<span class="fn">update</span>(<span class="vr">archivoPDF</span>).<span class="fn">digest</span>(<span class="st">'hex'</span>);
+    <span class="kw">const</span> <span class="vr">hashDocumento</span> = <span class="st">`0x${<span class="vr">hashBuffer</span>}`</span>;
+
+    <span class="cm">// 3. Conectar al Smart Contract desplegado</span>
+    <span class="kw">const</span> <span class="vr">contrato</span> = <span class="kw">new</span> <span class="vr">ethers</span>.<span class="fn">Contract</span>(<span class="vr">direccionContrato</span>, <span class="vr">abi</span>, <span class="vr">walletAutorizada</span>);
+
+    <span class="cm">// 4. Ejecutar transacción en la Blockchain</span>
+    <span class="kw">const</span> <span class="vr">tx</span> = <span class="kw">await</span> <span class="vr">contrato</span>.<span class="fn">registrarActuado</span>(<span class="vr">nurej</span>, <span class="vr">hashDocumento</span>, <span class="st">"Memorial"</span>);
+    <span class="kw">await</span> <span class="vr">tx</span>.<span class="fn">wait</span>(); <span class="cm">// Esperar confirmación de la red</span>
+
+    <span class="kw">return</span> { exito: <span class="kw">true</span>, txHash: <span class="vr">tx</span>.hash, documentoHash: <span class="vr">hashDocumento</span> };
+
+  } <span class="kw">catch</span> (<span class="vr">error</span>) {
+    console.<span class="fn">error</span>(<span class="st">"Error procesando actuado:"</span>, <span class="vr">error</span>);
+    <span class="kw">return</span> { exito: <span class="kw">false</span>, error: <span class="vr">error</span>.message };
+  }
+}</pre>
+        </div>
+
+        <div id="cv-frontend" class="code-view">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.5rem;">
+            <span class="mono" style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7ee787;">JavaScript — Frontend</span>
+            <span class="mono" style="font-size:.65rem;color:rgba(255,255,255,.22);">Lo que vería el Juez / Secretario</span>
+          </div>
+<pre class="cb"><span class="cm">// Lógica de UI para auditar un expediente desde la interfaz del juez</span>
+<span class="kw">async function</span> <span class="fn">auditarExpediente</span>(<span class="vr">nurej</span>) {
+  <span class="kw">const</span> <span class="vr">historial</span>    = <span class="kw">await</span> <span class="fn">getHistorialDesdeContrato</span>(<span class="vr">nurej</span>);
+  <span class="kw">const</span> <span class="vr">contenedor</span>   = document.<span class="fn">getElementById</span>(<span class="st">'lista-actuados'</span>);
+  <span class="vr">contenedor</span>.innerHTML = <span class="st">''</span>;
+
+  <span class="vr">historial</span>.<span class="fn">forEach</span>(<span class="vr">actuado</span> => {
+    <span class="kw">const</span> <span class="vr">el</span>      = document.<span class="fn">createElement</span>(<span class="st">'div'</span>);
+    <span class="vr">el</span>.className = <span class="st">'actuado-card border p-4 mb-2 rounded'</span>;
+
+    <span class="cm">// El Hash es la prueba matemática de que el documento es auténtico</span>
+    <span class="vr">el</span>.innerHTML = <span class="st">`
+      &lt;h4 class="font-bold"&gt;${<span class="vr">actuado</span>.tipoActuado}&lt;/h4&gt;
+      &lt;p&gt;&lt;b&gt;Fecha:&lt;/b&gt; ${new Date(<span class="vr">actuado</span>.fechaHora * <span class="nm">1000</span>).toLocaleString()}&lt;/p&gt;
+      &lt;p&gt;&lt;b&gt;Firmante:&lt;/b&gt; ${<span class="vr">actuado</span>.emisor}&lt;/p&gt;
+      &lt;div class="hash-box"&gt;
+        &lt;span class="badge-ok"&gt;Hash de Integridad ✔&lt;/span&gt;
+        &lt;code&gt;${<span class="vr">actuado</span>.hashDocumento}&lt;/code&gt;
+      &lt;/div&gt;
+    `</span>;
+    <span class="vr">contenedor</span>.<span class="fn">appendChild</span>(<span class="vr">el</span>);
+  });
+}</pre>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer style="background:var(--navy);color:rgba(250,248,244,.35);padding:3rem 1.5rem;border-top:1px solid rgba(255,255,255,.06);">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:2rem;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:.6rem;"><span>⚖️</span><span class="playfair" style="color:rgba(250,248,244,.4);font-size:.95rem;">Ley <span style="color:#7a5c30;">Blockchain</span> Bolivia</span></div>
+    <p style="font-size:.77rem;line-height:1.65;max-width:400px;">Concepto de Proyecto de Ley — Justicia Digital Bolivia.<br>Desarrollado como arquitectura de información interactiva.</p>
+    <span class="mono" style="font-size:.68rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.3rem .85rem;border-radius:6px;">v2.0.0</span>
+  </div>
+</footer>
+
+<script>
+/* Nav shadow */
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('shadow',window.scrollY>8));
+
+/* DATA */
+const TL=[
+  {id:'p1',icon:'💡',title:'1. Iniciativa (Art. 162 CPE)',desc:'Se redacta el "Proyecto de Ley" con Exposición de Motivos y Articulado. Para temas de justicia, es ideal que nazca del Tribunal Supremo de Justicia (TSJ) o de Senadores/Diputados de la Comisión de Justicia.',note:'El documento técnico debe incluir la arquitectura tecnológica y justificar el presupuesto. Se presenta en la ventanilla de la Cámara de Origen.'},
+  {id:'p2',icon:'👥',title:'2. Comisión y Comité',desc:'El proyecto pasa a la "Comisión de Justicia Plural" o "Planificación y Economía" (por el componente tecnológico) para revisión detallada.',note:'Aquí los arquitectos de software deben ser invitados como técnicos para explicar a los legisladores cómo el Hash y los Smart Contracts garantizan la inmutabilidad.'},
+  {id:'p3',icon:'🏛️',title:'3. Plenaria (Cámara de Origen)',desc:'Aprobado por la Comisión, pasa al pleno. Se debate en "Grande" (la idea general) y en "Detalle" (artículo por artículo).',note:'Se debe defender que el Blockchain no reemplaza al juez, sino que asegura el "Expediente Electrónico" creado por la Ley 1173.'},
+  {id:'p4',icon:'🔄',title:'4. Cámara Revisora',desc:'Si se aprueba, pasa a la otra cámara (Ej. de Diputados a Senadores). Se repite el proceso de Comisión y Plenaria.',note:'Si hay modificaciones, vuelve a la Cámara de Origen. Si hay desacuerdo total, va a sesión conjunta de la Asamblea Plurinacional.'},
+  {id:'p5',icon:'✍️',title:'5. Promulgación (Ejecutivo)',desc:'Sancionada por la ALP, el Presidente del Estado tiene 10 días para promulgarla.',note:'Una vez promulgada, se requiere un Decreto Supremo Reglamentario donde AGETIC y el Consejo de la Magistratura definirán los estándares técnicos exactos.'}
+];
+
+const CD=[
+  {id:'estonia',flag:'🇪🇪',name:'Estonia',title:'Pioneros en e-Justice y KSI Blockchain',content:'Estonia utiliza infraestructura de firma sin llave (KSI Blockchain) propia. No almacenan documentos completos en la cadena, sino los <strong>hashes criptográficos</strong> de los registros. Esto prueba el tiempo de creación, la identidad del creador y que el documento no fue alterado.',lesson:'No guardar PDFs en la Blockchain (pesado y costoso). Guardar solo la "huella digital" (Hash) del PDF del expediente generado bajo la Ley 1173.'},
+  {id:'china',flag:'🇨🇳',name:'China (Hangzhou)',title:'Cortes de Internet y Evidencia Digital',content:'Las Cortes de Internet en China integran blockchain para preservación de pruebas digitales. Los ciudadanos suben evidencia (capturas, contratos e-commerce) que son inmediatamente "selladas" en una blockchain judicial.',lesson:'Crear portales de Ciudadanía Digital (Ley 1080) donde las pruebas subidas se hasheen automáticamente para evitar que la contraparte alegue "falsificación digital".'},
+  {id:'colombia',flag:'🇨🇴',name:'Colombia',title:'Pilotos en Notariado y Tutelas (BID)',content:'Colombia realizó pilotos con el BID usando la red LACChain para registrar propiedades y tutelas, evitando manipulación de turnos y pérdida de documentos críticos.',lesson:'Utilizar redes regionales o estatales (una Blockchain impulsada por AGETIC) en lugar de redes públicas cripto volátiles, garantizando soberanía de datos nacional.'}
+];
+
+/* TIMELINE */
+let activeTL=TL[0].id;
+function renderTL(){
+  document.getElementById('tl-nav').innerHTML=TL.map((s,i)=>`
+    <div>
+      <div class="tl-step ${activeTL===s.id?'active':''}" onclick="pickTL('${s.id}')">
+        <div class="tl-dot">${i+1}</div>
+        <div class="tl-label">${s.title}</div>
+      </div>
+      ${i<TL.length-1?'<div class="tl-conn"></div>':''}
+    </div>`).join('');
+  const s=TL.find(x=>x.id===activeTL);
+  document.getElementById('tl-content').innerHTML=`
+    <div class="fi">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">${s.icon}</div>
+      <h3 class="playfair" style="font-size:1.45rem;color:var(--navy);margin-bottom:.6rem;">${s.title}</h3>
+      <p class="lora" style="font-size:.95rem;color:#374151;line-height:1.85;margin-bottom:1.1rem;">${s.desc}</p>
+      <div class="note-box">
+        <h5 style="font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#92400e;margin-bottom:.35rem;">📌 Nota para el Proyecto de Ley</h5>
+        <p style="font-size:.84rem;color:#78350f;line-height:1.7;">${s.note}</p>
+      </div>
+    </div>`;
+}
+window.pickTL=(id)=>{activeTL=id;renderTL();};
+renderTL();
+
+/* COUNTRIES */
+function renderCountryList(aid){
+  document.getElementById('country-list').innerHTML=CD.map(c=>`
+    <button class="cbtn ${aid===c.id?'active':''}" onclick="pickCountry('${c.id}')">
+      <div class="cflag">${c.flag}</div><span>${c.name}</span>
+    </button>`).join('');
+}
+function renderCountryDetail(id){
+  const c=CD.find(x=>x.id===id);
+  document.getElementById('country-detail').innerHTML=`
+    <div class="fi">
+      <div style="display:flex;align-items:center;gap:1.1rem;margin-bottom:1.6rem;flex-wrap:wrap;">
+        <div style="width:54px;height:54px;border-radius:50%;background:var(--cream);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.75rem;flex-shrink:0;">${c.flag}</div>
+        <h3 class="playfair" style="font-size:1.35rem;color:var(--navy);line-height:1.25;">${c.title}</h3>
+      </div>
+      <p style="font-size:.92rem;color:#374151;line-height:1.8;margin-bottom:1.5rem;">${c.content}</p>
+      <div style="background:#fffbf0;border:1px solid #f0d99a;border-left:4px solid var(--gold);border-radius:8px;padding:1.15rem 1.4rem;">
+        <h4 style="font-size:.67rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#92400e;margin-bottom:.4rem;">💡 Aplicación para la Ley Boliviana</h4>
+        <p style="font-size:.84rem;color:#78350f;line-height:1.7;">${c.lesson}</p>
+      </div>
+    </div>`;
+}
+window.pickCountry=(id)=>{renderCountryList(id);renderCountryDetail(id);};
+renderCountryList(null);
+
+/* CODE TABS */
+document.querySelectorAll('.code-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.code-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.code-view').forEach(v=>v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('cv-'+tab.dataset.t).classList.add('active');
+  });
+});
+
+/* RADAR CHART */
+document.addEventListener('DOMContentLoaded',()=>{
+  Chart.defaults.font.family="'Nunito',sans-serif";
+  new Chart(document.getElementById('impactChart').getContext('2d'),{
+    type:'radar',
+    data:{
+      labels:['Transparencia','Seguridad','Velocidad','Inmutabilidad','Auditoría'],
+      datasets:[
+        {label:'Sistema Tradicional',data:[30,40,20,10,20],backgroundColor:'rgba(148,163,184,.15)',borderColor:'rgba(148,163,184,.55)',pointBackgroundColor:'rgba(148,163,184,.8)',borderWidth:1.5},
+        {label:'Con Blockchain',data:[90,95,80,100,90],backgroundColor:'rgba(201,144,58,.2)',borderColor:'rgba(201,144,58,.9)',pointBackgroundColor:'rgba(201,144,58,1)',borderWidth:2}
+      ]
+    },
+    options:{
+      maintainAspectRatio:false,responsive:true,
+      scales:{r:{angleLines:{color:'rgba(255,255,255,.1)'},grid:{color:'rgba(255,255,255,.08)'},pointLabels:{color:'rgba(250,248,244,.65)',font:{size:11,weight:'600'}},ticks:{display:false,min:0,max:100}}},
+      plugins:{
+        legend:{position:'bottom',labels:{color:'rgba(250,248,244,.5)',font:{size:11},usePointStyle:true,boxWidth:8}},
+        tooltip:{backgroundColor:'rgba(15,30,60,.95)',titleColor:'#faf8f4',bodyColor:'rgba(250,248,244,.7)',padding:12,cornerRadius:8}
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
