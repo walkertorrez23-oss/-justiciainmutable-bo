@@ -1,2 +1,3 @@
 # -justiciainmutable-bo
-blockchain bol
+blockchain bolivia 
+falta mejorara y poner algunas cosas
